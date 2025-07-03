@@ -3,7 +3,7 @@ import { Card, CardContent } from './components/ui/card';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { Textarea } from './components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './components/ui/dialog';
 
 const initialPosts = [
   {
@@ -91,37 +91,39 @@ export default function RanchitoPlanner() {
               <img src={URL.createObjectURL(post.media)} alt="Media" className="w-full max-w-sm rounded" />
             )}
             {isEditor && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button onClick={() => setEditingIndex(index)}>Editar</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Editar publicación</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-2">
-                    <Input
-                      value={post.title}
-                      onChange={e => updatePost(index, 'title', e.target.value)}
-                      placeholder="Título"
-                    />
-                    <Textarea
-                      value={post.description}
-                      onChange={e => updatePost(index, 'description', e.target.value)}
-                      placeholder="Descripción"
-                    />
-                    <Textarea
-                      value={post.comments}
-                      onChange={e => updatePost(index, 'comments', e.target.value)}
-                      placeholder="Comentarios de revisión"
-                    />
-                    <Input
-                      type="file"
-                      onChange={e => updatePost(index, 'media', e.target.files[0])}
-                    />
-                  </div>
-                </DialogContent>
-              </Dialog>
+              editingIndex === index ? (
+                <Dialog>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Editar publicación</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-2">
+                      <Input
+                        value={post.title}
+                        onChange={e => updatePost(index, 'title', e.target.value)}
+                        placeholder="Título"
+                      />
+                      <Textarea
+                        value={post.description}
+                        onChange={e => updatePost(index, 'description', e.target.value)}
+                        placeholder="Descripción"
+                      />
+                      <Textarea
+                        value={post.comments}
+                        onChange={e => updatePost(index, 'comments', e.target.value)}
+                        placeholder="Comentarios de revisión"
+                      />
+                      <Input
+                        type="file"
+                        onChange={e => updatePost(index, 'media', e.target.files[0])}
+                      />
+                      <Button onClick={() => setEditingIndex(null)}>Cerrar</Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              ) : (
+                <Button onClick={() => setEditingIndex(index)}>Editar</Button>
+              )
             )}
           </CardContent>
         </Card>
