@@ -3,7 +3,7 @@ import { Card, CardContent } from './components/ui/card';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { Textarea } from './components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './components/ui/dialog';
 
 const initialPosts = [
   {
@@ -14,7 +14,7 @@ const initialPosts = [
     description: 'Helado azul brillante con fondo de grafiti y luces de neón. Perfecto para un post refrescante de lunes.',
     emotion: 'Diversión, frescura',
     style: 'Foto fotorrealista con colores pop',
-    media: null,
+    media: [],
     comments: ''
   },
   {
@@ -25,7 +25,7 @@ const initialPosts = [
     description: 'Escena mágica: una mano abre el refrigerador y se revela un portal dorado al campo, donde aparece la vaquita del Ranchito.',
     emotion: 'Magia cotidiana, ternura',
     style: 'Fotorrealismo mágico',
-    media: null,
+    media: [],
     comments: ''
   },
   {
@@ -36,7 +36,7 @@ const initialPosts = [
     description: 'Niños jugando con gelatina mágica que brilla. Fondo de parque, energía infantil.',
     emotion: 'Alegría, imaginación',
     style: 'Ilustración 2D colorida',
-    media: null,
+    media: [],
     comments: ''
   },
   {
@@ -47,7 +47,7 @@ const initialPosts = [
     description: 'Vaquita con casco azul patinando con yogurt en la mano. Fondo de parque con mucho color.',
     emotion: 'Juego, aventura, simpatía',
     style: '3D animado tipo película',
-    media: null,
+    media: [],
     comments: ''
   },
   {
@@ -58,7 +58,7 @@ const initialPosts = [
     description: 'Niño reciclando botella acompañado por la vaquita del Ranchito. Escena urbana escolar.',
     emotion: 'Conciencia ecológica, aprendizaje',
     style: '3D educativo',
-    media: null,
+    media: [],
     comments: ''
   },
 ];
@@ -87,45 +87,58 @@ export default function RanchitoPlanner() {
             <p><strong>Valor emocional:</strong> {post.emotion}</p>
             <p><strong>Estilo visual:</strong> {post.style}</p>
             <p><strong>Comentarios:</strong> {post.comments}</p>
-            {post.media && (
-              <img src={URL.createObjectURL(post.media)} alt="Media" className="w-full max-w-sm rounded" />
-            )}
+              {post.media && post.media.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {post.media.map((file, i) => (
+                    <img
+                      key={i}
+                      src={URL.createObjectURL(file)}
+                      alt="Media"
+                      className="w-full max-w-sm rounded"
+                    />
+                  ))}
+                </div>
+              )}
             {isEditor && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button onClick={() => setEditingIndex(index)}>Editar</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Editar publicación</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-2">
-                    <Input
-                      value={post.title}
-                      onChange={e => updatePost(index, 'title', e.target.value)}
-                      placeholder="Título"
-                    />
-                    <Textarea
-                      value={post.description}
-                      onChange={e => updatePost(index, 'description', e.target.value)}
-                      placeholder="Descripción"
-                    />
-                    <Textarea
-                      value={post.comments}
-                      onChange={e => updatePost(index, 'comments', e.target.value)}
-                      placeholder="Comentarios de revisión"
-                    />
-                    <Input
-                      type="file"
-                      onChange={e => updatePost(index, 'media', e.target.files[0])}
-                    />
-                  </div>
-                </DialogContent>
-              </Dialog>
+              <Button onClick={() => setEditingIndex(index)}>Editar</Button>
             )}
           </CardContent>
         </Card>
       ))}
+      {editingIndex !== null && (
+        <Dialog open={true} onClose={() => setEditingIndex(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Editar publicación</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-2">
+              <Input
+                value={posts[editingIndex].title}
+                onChange={e => updatePost(editingIndex, 'title', e.target.value)}
+                placeholder="Título"
+              />
+              <Textarea
+                value={posts[editingIndex].description}
+                onChange={e => updatePost(editingIndex, 'description', e.target.value)}
+                placeholder="Descripción"
+              />
+              <Textarea
+                value={posts[editingIndex].comments}
+                onChange={e => updatePost(editingIndex, 'comments', e.target.value)}
+                placeholder="Comentarios de revisión"
+              />
+              <Input
+                type="file"
+                multiple
+                onChange={e =>
+                  updatePost(editingIndex, 'media', Array.from(e.target.files))
+                }
+              />
+              <Button onClick={() => setEditingIndex(null)}>Cerrar</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
