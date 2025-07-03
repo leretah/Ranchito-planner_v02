@@ -91,43 +91,42 @@ export default function RanchitoPlanner() {
               <img src={URL.createObjectURL(post.media)} alt="Media" className="w-full max-w-sm rounded" />
             )}
             {isEditor && (
-              editingIndex === index ? (
-                <Dialog>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Editar publicación</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-2">
-                      <Input
-                        value={post.title}
-                        onChange={e => updatePost(index, 'title', e.target.value)}
-                        placeholder="Título"
-                      />
-                      <Textarea
-                        value={post.description}
-                        onChange={e => updatePost(index, 'description', e.target.value)}
-                        placeholder="Descripción"
-                      />
-                      <Textarea
-                        value={post.comments}
-                        onChange={e => updatePost(index, 'comments', e.target.value)}
-                        placeholder="Comentarios de revisión"
-                      />
-                      <Input
-                        type="file"
-                        onChange={e => updatePost(index, 'media', e.target.files[0])}
-                      />
-                      <Button onClick={() => setEditingIndex(null)}>Cerrar</Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              ) : (
-                <Button onClick={() => setEditingIndex(index)}>Editar</Button>
-              )
+              <Button onClick={() => setEditingIndex(index)}>Editar</Button>
             )}
           </CardContent>
         </Card>
       ))}
+      {editingIndex !== null && (
+        <Dialog open={true} onClose={() => setEditingIndex(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Editar publicación</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-2">
+              <Input
+                value={posts[editingIndex].title}
+                onChange={e => updatePost(editingIndex, 'title', e.target.value)}
+                placeholder="Título"
+              />
+              <Textarea
+                value={posts[editingIndex].description}
+                onChange={e => updatePost(editingIndex, 'description', e.target.value)}
+                placeholder="Descripción"
+              />
+              <Textarea
+                value={posts[editingIndex].comments}
+                onChange={e => updatePost(editingIndex, 'comments', e.target.value)}
+                placeholder="Comentarios de revisión"
+              />
+              <Input
+                type="file"
+                onChange={e => updatePost(editingIndex, 'media', e.target.files[0])}
+              />
+              <Button onClick={() => setEditingIndex(null)}>Cerrar</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
